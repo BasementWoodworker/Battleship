@@ -1,11 +1,4 @@
-class Player {
-  constructor(gameboard) {
-    this.gameboard = gameboard;
-  }
-  takeTurn(y, x, enemyBoard) {
-    enemyBoard.receiveAttack(y, x);
-  }
-}
+import Player from "./player";
 
 class AI extends Player {
   constructor() {
@@ -20,4 +13,4 @@ class AI extends Player {
   }
 }
 
-export default Player;
+export default AI;

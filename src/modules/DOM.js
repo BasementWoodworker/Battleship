@@ -11,8 +11,17 @@ body.append(
 )
 }
 
-function displayBoard(board) {
-
+function displayBoard(board, whose) {
+  const boardElem = (whose === "yours") ? playerBoard : enemyBoard;
+  const hideShips = (whose === "yours") ? false : true;
+  board.array.forEach(line => {
+    line.forEach(square => {
+      const newElem = createElem("div", {Class: "square"});
+      if (square.occupation !== "empty" && !hideShips) newElem.classList.add("ship");
+      else newElem.classList.add("water");
+      boardElem.appendChild(newElem);
+    })
+  })
 }
 
 export default {
