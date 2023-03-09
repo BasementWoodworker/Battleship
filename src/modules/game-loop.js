@@ -5,32 +5,44 @@ import Ship from "./ships";
 import DOM from "./DOM";
 
 const gamePhases = [
-  placementPhase,
-  battlePhase
+  {
+  start: placementPhase,
+  cleanup: placementPhaseCleanup
+  },
+  {
+  start: battlePhase,
+  cleanup: battlePhaseCleanup
+  },
+  {
+  start: gameEnd
+  }
 ];
 let currentPhase = 0;
 let moveToNextPhase = false;
 let orientation = "horizontal";
 let you;
+let yourBoard;
 let yourShips = [];
 let enemy;
+let enemyBoard;
 let enemyShips = [];
-let yourTurn = false;
+let winner;
 
 window.addEventListener("click", gamePhaseHandler);
 
 function gamePhaseHandler() {
   if (moveToNextPhase) {
+    if (gamePhases[currentPhase].cleanup !== undefined) gamePhases[currentPhase].cleanup();
     currentPhase++;
     moveToNextPhase = false;
-    gamePhases[currentPhase]();
+    gamePhases[currentPhase].start();
   }
 }
 
 function newGame() {
   you = new Player(new Gameboard);
   enemy = new AI(new Gameboard);
-  gamePhases[0]();
+  gamePhases[0].start();
 }
 
 function placementPhase() {
@@ -49,14 +61,10 @@ function placementPhase() {
     new Ship(4),
     new Ship(3)
   ];
-  const yourBoard = [...DOM.playerBoard.children]
+  yourBoard = [...DOM.playerBoard.children]
   yourBoard.forEach(square => square.addEventListener("click", (event) => {
       placeYourShip(event);
-      if (yourShips.length === 0) {
-        // Removing all event listeners
-        yourBoard.forEach(square => square.replaceWith(square.cloneNode()));
-        moveToNextPhase = true;
-      }
+      if (yourShips.length === 0) moveToNextPhase = true;
     }))
 }
 
@@ -69,17 +77,42 @@ function placeYourShip(event) {
   DOM.refreshBoard(you.gameboard, "yours");
 }
 
+function placementPhaseCleanup() {
+  removeEventListeners(yourBoard);
+}
+
 function battlePhase() {
   console.log("battle")
-  const enemyBoard = [...DOM.enemyBoard.children]
+  enemyBoard = [...DOM.enemyBoard.children]
   enemyBoard.forEach(square => square.addEventListener("click", (event) => {
     const y = Number (event.target.getAttribute("data-y"));
     const x = Number (event.target.getAttribute("data-x"));
     you.takeTurn(y, x, enemy.gameboard);
     DOM.refreshBoard(enemy.gameboard, "enemy's");
+    if (enemy.checkLoss()) {
+      winner = "you";
+      moveToNextPhase = true;
+    }
     enemy.takeTurn(you.gameboard);
     DOM.refreshBoard(you.gameboard, "yours");
+    if (you.checkLoss()) {
+      winner = "enemy";
+      moveToNextPhase = true;
+    }
   }))
+}
+
+function battlePhaseCleanup() {
+  removeEventListeners(enemyBoard);
+}
+
+function gameEnd() {
+  if (winner === "you") alert("You won");
+  else if (winner === "enemy") alert("You lost");
+}
+
+function removeEventListeners(board) {
+  board.forEach(square => square.replaceWith(square.cloneNode()));
 }
 
 
