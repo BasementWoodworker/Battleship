@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { SourceMap } = require('module');
 
 module.exports = {
   mode: 'development',
@@ -32,5 +33,6 @@ module.exports = {
   },
   optimization: {
     runtimeChunk: 'single'
-  }
+  },
+  devtool: 'inline-source-map'
 }

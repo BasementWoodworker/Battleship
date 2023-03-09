@@ -35,6 +35,14 @@ body {
   background-color: aqua;
 }
 
+.water.checked {
+  background-color: green;
+}
+
 .ship {
   background-color: darkgrey;
+}
+
+.ship.checked {
+  background-color: red;
 }

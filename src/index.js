@@ -1,14 +1,12 @@
 import "./style.css";
 import DOM from "./modules/DOM";
+import gameLoop from "./modules/game-loop";
 import Gameboard from "./modules/gameboard";
-import Ship from "./modules/ships";
 
-const a = new Gameboard();
-const s = new Ship(3);
-
-console.log(a.placeShip(s, 5, 5, "vertical"));
-console.log(a.placeShip(s, 2, 1, "horizontal"));
-console.log(a);
+const placeholder = new Gameboard();
 
 DOM.buildPage();
-DOM.displayBoard(a, "yours");
+DOM.displayBoard(placeholder, "yours");
+DOM.displayBoard(placeholder, "enemy's");
+
+gameLoop.newGame();
