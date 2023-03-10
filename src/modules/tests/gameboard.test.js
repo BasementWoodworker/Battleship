@@ -10,9 +10,9 @@ test("Gameboard is successfully created", () => {
 
 test("Ship can be placed", () => {
   board.placeShip(ship, 4, 5, "horizontal");
+  expect(board.array[4][4].occupation).toBe(ship);
   expect(board.array[4][5].occupation).toBe(ship);
   expect(board.array[4][6].occupation).toBe(ship);
-  expect(board.array[4][7].occupation).toBe(ship);
 })
 
 test("Ship can't be placed out of boundaries", () => {
@@ -22,16 +22,18 @@ test("Ship can't be placed out of boundaries", () => {
 })
 
 test("Ship placement works vertically", () => {
+  const board = new Gameboard;
+  const ship = new Ship(3);
   board.placeShip(ship, 5, 5, "vertical");
+  expect(board.array[4][5].occupation).toBe(ship);
   expect(board.array[5][5].occupation).toBe(ship);
   expect(board.array[6][5].occupation).toBe(ship);
-  expect(board.array[7][5].occupation).toBe(ship);
 })
 
 test("Ships cannot override each other", () => {
   const temp = new Gameboard();
   temp.placeShip(new Ship(5), 3, 7, "horizontal");
-  expect(temp.placeShip(new Ship(5), 1, 7, "horizontal")).toBe("Placement cancelled");
+  expect(temp.placeShip(new Ship(5), 3, 5, "horizontal")).toBe("Placement cancelled");
   expect(temp.array[1][4].occupation).toBe("empty");
 })
 
