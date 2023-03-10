@@ -27,6 +27,8 @@ let enemy;
 let enemyBoard;
 let enemyShips = [];
 let winner;
+let previousPreviewCoords = [];
+let currentPreviewSquare;
 
 window.addEventListener("click", gamePhaseHandler);
 
@@ -45,7 +47,7 @@ function newGame() {
   gamePhases[0].start();
 }
 
-// Phase 1
+// Phase 0
 function placementPhase() {
   // AI placement
   enemyShips = [
@@ -67,8 +69,8 @@ function placementPhase() {
     placeYourShip(event);
     if (yourShips.length === 0) moveToNextPhase = true;
   }))
-  yourBoard.forEach(square => square.addEventListener("hover", (event) => {
-
+  yourBoard.forEach(square => square.addEventListener("mouseover", (event) => {
+    showPlacementPreview(event);
   }))
 }
 
@@ -77,22 +79,36 @@ function placeYourShip(event) {
   const x = Number (event.target.getAttribute("data-x"));
   const ship = yourShips.shift();
   const result = you.gameboard.placeShip(ship, y, x, orientation);
-  if (result === "Placement cancelled") yourShips.unshift(ship);
+  if (result === "Placement cancelled") {
+    yourShips.unshift(ship);
+    return;
+  } else {
   DOM.refreshBoard(you.gameboard, "yours");
+  previousPreviewCoords.forEach(position => {
+    DOM.deactivatePreviewSquare(position);
+    DOM.markPreviewSquareProblematic(position);
+  });
+  }
 }
 
-function placementPreview(event) {
+function showPlacementPreview(event) {
   const y = Number (event.target.getAttribute("data-y"));
   const x = Number (event.target.getAttribute("data-x"));
-  const ship = yourShips.shift();
-  const result = you.gameboard.preview(ship, y, x, orientation);
+  const ship = yourShips[0];
+  if (ship === undefined) return;
+  currentPreviewSquare = event;
+  const coords = you.gameboard.getPlacementCoordinates(ship, y, x, orientation);
+  previousPreviewCoords.forEach(position => DOM.deactivatePreviewSquare(position));
+  previousPreviewCoords = coords;
+  coords.forEach(position => DOM.activatePreviewSquare(position));
 }
 
 function placementPhaseCleanup() {
   removeEventListeners(yourBoard);
+  DOM.deactivateAllPreviewSquares();
 }
 
-// Phase 2
+// Phase 1
 function battlePhase() {
   console.log("battle")
   enemyBoard = [...DOM.enemyBoard.children]
@@ -118,7 +134,7 @@ function battlePhaseCleanup() {
   removeEventListeners(enemyBoard);
 }
 
-// Phase 3
+// Phase 2
 function gameEnd() {
   if (winner === "you") alert("You won");
   else if (winner === "enemy") alert("You lost");
@@ -133,6 +149,7 @@ DOM.orientationSwitch.textContent = orientation;
 DOM.orientationSwitch.addEventListener("click", () => {
   orientation = (orientation === "horizontal") ? "vertical" : "horizontal";
   DOM.orientationSwitch.textContent = orientation;
+  if (currentPreviewSquare !== undefined) showPlacementPreview(currentPreviewSquare);
 })
 
 DOM.randomPlacement.addEventListener("click", function handler() {
@@ -140,6 +157,11 @@ DOM.randomPlacement.addEventListener("click", function handler() {
   DOM.refreshBoard(you.gameboard, "yours");
   moveToNextPhase = true;
   DOM.randomPlacement.removeEventListener("click", handler);
+})
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "r") DOM.orientationSwitch.click()
+  if (currentPreviewSquare !== undefined) showPlacementPreview(currentPreviewSquare);
 })
 
 export default {

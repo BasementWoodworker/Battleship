@@ -16,6 +16,12 @@ body {
 
 body {
   display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.your-board-container {
+  position:relative;
 }
 
 .gameboard {
@@ -45,4 +51,25 @@ body {
 
 .ship.checked {
   background-color: red;
+}
+
+
+.preview-board {
+  position: absolute;
+  z-index: 1;
+  top: -45px;
+  left: -45px;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: repeat(calc(var(--size) + 4), 1fr);
+  width: 690px;
+  height: 690px;
+}
+
+.preview-square.active {
+  background-color: rgba(255, 166, 0, 0.5);
+}
+
+.preview-square.active.problematic {
+  background-color: rgba(255, 68, 0, 0.5);
 }

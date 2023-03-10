@@ -1,18 +1,36 @@
 import createElem from "./create-element-custom-function";
 
+const SIZE = 10;
+const PREVIEW_SIZE = SIZE + 4;
+
 const body = document.body;
+const yourBoardContainer = createElem("div", {Class: "your-board-container"});
 const playerBoard = createElem("div", {Class: "gameboard"});
 const enemyBoard = createElem("div", {Class: "gameboard"});
 const orientationSwitch = createElem("div", {Class: "orientation-switch"});
 const randomPlacement = createElem("div", {Class: "random-button", Content: "Place randomly"});
+const previewBoard = [];
+const previewBoardElem = createElem("div", {Class: "preview-board"});
+
+yourBoardContainer.append(playerBoard, previewBoardElem);
 
 function buildPage() {
-body.append(
-  playerBoard,
-  orientationSwitch,
-  randomPlacement,
-  enemyBoard
-)
+  body.append(
+    yourBoardContainer,
+    orientationSwitch,
+    randomPlacement,
+    enemyBoard
+  )
+  for (let i = 0; i < PREVIEW_SIZE; i++) {
+    const line = [];
+    previewBoard.push(line);
+    for (let j = 0; j < PREVIEW_SIZE; j++) {
+      const previewSquare = createElem("div", {Class: "preview-square"});
+      if (i < 2 || i > 11 || j < 2 || j > 11) previewSquare.classList.add("problematic");
+      line.push(previewSquare);
+      previewBoardElem.appendChild(previewSquare);
+    }
+  }
 }
 
 function displayBoard(board, whose) {
@@ -53,6 +71,24 @@ function refreshBoard(board, whose) {
   })
 }
 
+function activatePreviewSquare(position) {
+  previewBoard[position.y + 2][position.x + 2].classList.add("active");
+}
+
+function deactivatePreviewSquare(position) {
+  previewBoard[position.y + 2][position.x + 2].classList.remove("active");
+}
+
+function deactivateAllPreviewSquares() {
+  for (const square of previewBoardElem.children) {
+    square.classList.remove("active");
+  }
+}
+
+function markPreviewSquareProblematic(position) {
+  previewBoard[position.y + 2][position.x + 2].classList.add("problematic");
+}
+
 export default {
   orientationSwitch,
   randomPlacement,
@@ -60,5 +96,9 @@ export default {
   enemyBoard,
   buildPage,
   displayBoard,
-  refreshBoard
+  refreshBoard,
+  activatePreviewSquare,
+  deactivatePreviewSquare,
+  deactivateAllPreviewSquares,
+  markPreviewSquareProblematic
 }
