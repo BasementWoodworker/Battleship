@@ -41,13 +41,13 @@ class Gameboard {
     }
     this.ships.push(ship);
   }
+  preview(ship, y, x, orientation) {
+    
+  }
   receiveAttack(y, x) {
     const square = this.array[y][x];
     if (square.checked) return "has already been shot"
-    if (square.occupation !== "empty") {
-      square.occupation.hit();
-      if (square.occupation.isSunk()) this.ships = this.ships.filter(ship => ship !== square.occupation);
-    }
+    if (square.occupation !== "empty") square.occupation.hit();
     square.checked = true;
   }
   shipsLeft() {

@@ -9,9 +9,6 @@ class AI {
       if (enemyBoard.receiveAttack(y, x) !== "has already been shot") break;
     }
   }
-  checkLoss() {
-    if (this.gameboard.ships.length === 0) return true;
-  }
 }
 
 export default AI;

@@ -22,7 +22,7 @@ let moveToNextPhase = false;
 let orientation = "horizontal";
 let you;
 let yourBoard;
-let yourShips = [];
+let yourShips = []; // !Might be redundant!
 let enemy;
 let enemyBoard;
 let enemyShips = [];
@@ -45,6 +45,7 @@ function newGame() {
   gamePhases[0].start();
 }
 
+// Phase 1
 function placementPhase() {
   // AI placement
   enemyShips = [
@@ -63,9 +64,12 @@ function placementPhase() {
   ];
   yourBoard = [...DOM.playerBoard.children]
   yourBoard.forEach(square => square.addEventListener("click", (event) => {
-      placeYourShip(event);
-      if (yourShips.length === 0) moveToNextPhase = true;
-    }))
+    placeYourShip(event);
+    if (yourShips.length === 0) moveToNextPhase = true;
+  }))
+  yourBoard.forEach(square => square.addEventListener("hover", (event) => {
+
+  }))
 }
 
 function placeYourShip(event) {
@@ -77,25 +81,33 @@ function placeYourShip(event) {
   DOM.refreshBoard(you.gameboard, "yours");
 }
 
+function placementPreview(event) {
+  const y = Number (event.target.getAttribute("data-y"));
+  const x = Number (event.target.getAttribute("data-x"));
+  const ship = yourShips.shift();
+  const result = you.gameboard.preview(ship, y, x, orientation);
+}
+
 function placementPhaseCleanup() {
   removeEventListeners(yourBoard);
 }
 
+// Phase 2
 function battlePhase() {
   console.log("battle")
   enemyBoard = [...DOM.enemyBoard.children]
   enemyBoard.forEach(square => square.addEventListener("click", (event) => {
     const y = Number (event.target.getAttribute("data-y"));
     const x = Number (event.target.getAttribute("data-x"));
-    you.takeTurn(y, x, enemy.gameboard);
+    if (you.takeTurn(y, x, enemy.gameboard) === "has already been shot") return;
     DOM.refreshBoard(enemy.gameboard, "enemy's");
-    if (enemy.checkLoss()) {
+    if (!enemy.gameboard.shipsLeft()) {
       winner = "you";
       moveToNextPhase = true;
     }
     enemy.takeTurn(you.gameboard);
     DOM.refreshBoard(you.gameboard, "yours");
-    if (you.checkLoss()) {
+    if (!you.gameboard.shipsLeft()) {
       winner = "enemy";
       moveToNextPhase = true;
     }
@@ -106,6 +118,7 @@ function battlePhaseCleanup() {
   removeEventListeners(enemyBoard);
 }
 
+// Phase 3
 function gameEnd() {
   if (winner === "you") alert("You won");
   else if (winner === "enemy") alert("You lost");
