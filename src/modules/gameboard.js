@@ -15,34 +15,33 @@ class Gameboard {
     }
     return result;
   }
+  getPlacementCoordinates(ship, y, x, orientation) {
+    const coords = [];
+    let i = 0;
+    let shift = 0;
+    while(true) {
+      if (orientation === "horizontal") coords.push({y, x: (x - shift)})
+      if (orientation === "vertical") coords.push({y: (y - shift), x})
+      i++;
+      if (i === ship.length) break;
+      shift++;
+      if (orientation === "horizontal") coords.push({y, x: (x + shift)})
+      if (orientation === "vertical") coords.push({y: (y + shift), x})
+      i++;
+      if (i === ship.length) break;
+    }
+    return coords;
+  }
   placeShip(ship, y, x, orientation) {
-    try {
-      if (orientation === "horizontal") {
-        // Check if the ship will fit
-        for (let i = x; i < (ship.length + x); i++) {
-          if (this.array[y][i] === undefined || this.array[y][i].occupation !== "empty") return "Placement cancelled";
-        }
-        // Place the ship
-        for (let i = x; i < (ship.length + x); i++) {
-          this.array[y][i].occupation = ship;
-        }
-      } else if (orientation === "vertical") {
-        // Check if the ship will fit
-        for (let i = y; i < (ship.length + y); i++) {
-          if (this.array[i][x] === undefined || this.array[i][x].occupation !== "empty") return "Placement cancelled";
-        }
-        // Place the ship
-        for (let i = y; i < (ship.length + y); i++) {
-          this.array[i][x].occupation = ship;
-        }
-      }
-    } catch(err) {
-      return "Placement cancelled";
+    const coords = this.getPlacementCoordinates(ship, y, x, orientation);
+    for (const point of coords) {
+      if (point.x < 0 || point.x > this.#SIZE - 1 || point.y < 0 || point.y > this.#SIZE - 1) return "Placement cancelled";
+      if (this.array[point.y][point.x].occupation !== "empty") return "Placement cancelled";
+    }
+    for (const point of coords) {
+      this.array[point.y][point.x].occupation = ship;
     }
     this.ships.push(ship);
-  }
-  preview(ship, y, x, orientation) {
-    
   }
   receiveAttack(y, x) {
     const square = this.array[y][x];
