@@ -30,6 +30,9 @@ let winner;
 let previousPreviewCoords = [];
 let currentPreviewSquare;
 const emptyGameboard = new Gameboard();
+const placementSound = new Audio(require("../sounds/placed.wav"));
+const hitSound = new Audio(require("../sounds/hit.wav"));
+const missSound = new Audio(require("../sounds/miss.wav"));
 
 window.addEventListener("click", gamePhaseHandler);
 
@@ -84,7 +87,7 @@ function placementPhase() {
     new Ship(2),
     new Ship(2)
   ];
-  // I placed them there because javascript was executing faster than DOM elements managed to load
+  // Placed them two there because javascript was executing faster than DOM elements managed to load
   yourBoard = [...DOM.playerBoard.children];
   enemyBoard = [...DOM.enemyBoard.children];
   yourBoard.forEach(square => square.addEventListener("click", (event) => {
@@ -109,11 +112,13 @@ function placeYourShip(event) {
     yourShips.unshift(ship);
     return;
   } else {
-  DOM.refreshBoard(you.gameboard, "yours");
-  previousPreviewCoords.forEach(position => {
-    DOM.deactivatePreviewSquare(position);
-    DOM.markPreviewSquareProblematic(position);
-  });
+    placementSound.currentTime = 0;
+    placementSound.play();
+    DOM.refreshBoard(you.gameboard, "yours");
+    previousPreviewCoords.forEach(position => {
+      DOM.deactivatePreviewSquare(position);
+      DOM.markPreviewSquareProblematic(position);
+    });
   }
 }
 
@@ -142,7 +147,16 @@ function battlePhase() {
   enemyBoard.forEach(square => square.addEventListener("click", (event) => {
     const y = Number (event.target.getAttribute("data-y"));
     const x = Number (event.target.getAttribute("data-x"));
-    if (you.takeTurn(y, x, enemy.gameboard) === "shot cancelled") return;
+    const yourShot = you.takeTurn(y, x, enemy.gameboard)
+    if (yourShot === "shot cancelled") return;
+    if (yourShot === "hit") {
+      hitSound.currentTime = 0;
+      hitSound.play();
+    }
+    else if (yourShot === "shot missed") {
+      missSound.currentTime = 0;
+      missSound.play();
+    }
     DOM.refreshBoard(enemy.gameboard, "enemy's", false);
     if (!enemy.gameboard.shipsLeft()) {
       winner = "you";

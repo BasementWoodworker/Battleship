@@ -23,9 +23,9 @@ module.exports = {
         use: ['style-loader', 'css-loader']
       },
       {
-        test: /\.jpg$/i,
+        test: /\.(jpg|wav)$/i,
         type: 'asset/resource'
-      }
+      },
     ]
   },
   devServer: {
