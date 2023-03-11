@@ -31,7 +31,6 @@ class AI {
       this.shootInLine(enemyBoard);
   }
   randomTurn(enemyBoard) {
-    console.log("STATE 0: random shot");
     let result;
     let y;
     let x;
@@ -54,14 +53,12 @@ class AI {
     }
   }
   findShipOrientation(enemyBoard) {
-    console.log("STATE 1: finding ship continuation");
     const adjacent = this.foundShipAdjacentCoords.shift();
     if (adjacent === undefined) {
       this.state = 0;
       this.takeTurn(enemyBoard);
       return;
     }
-    console.log(this.foundShipAdjacentCoords)
     const result = enemyBoard.receiveAttack(adjacent.y, adjacent.x)
     if (result === "shot cancelled") {
       this.findShipOrientation(enemyBoard);
@@ -82,12 +79,6 @@ class AI {
     }
   }
   shootInLine(enemyBoard) {
-    console.log("STATE 2: shooting in line");
-    console.log("positive option")
-    console.log(this.optionPositive);
-    console.log("negative option")
-    console.log(this.optionNegative)
-    console.log(this.foundShipOrientation);
     let result;
     if (this.optionPositive !== null) {
       result = enemyBoard.receiveAttack(this.optionPositive.y, this.optionPositive.x);

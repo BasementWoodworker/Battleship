@@ -6,6 +6,7 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  user-select: none;
 }
 
 html,
@@ -20,17 +21,46 @@ body {
   align-items: center;
 }
 
+.announcer {
+  position: absolute;
+  top: -220px;
+  font-size: 50px;
+  text-align: center;
+  padding: 8px;
+  border: 2px solid black;
+  border-radius: 4px;
+  width: 400px;
+}
+
 .your-board-container {
   position:relative;
 }
 
 .gameboard {
+  position: relative;
+  flex-shrink: 0;
   display: grid;
   grid-template-columns: repeat(var(--size), 1fr);
   width: 500px;
   height: 500px;
-  border: 5px solid green;
+  border: 5px solid darkcyan;
   margin: 50px;
+}
+
+.gameboard.player::before {
+  position: absolute;
+  content: "Player";
+  font-size: 48px;
+  top: -80px;
+  left: 170px;
+}
+
+.gameboard.enemy::before {
+  position: absolute;
+  content: "AI";
+  font-size: 48px;
+  top: -80px;
+  left: 210px;
 }
 
 .square {
@@ -50,19 +80,18 @@ body {
 }
 
 .ship.checked {
-  background-color: red;
+  background-color: rgb(238, 69, 39);
 }
-
 
 .preview-board {
   position: absolute;
   z-index: 1;
   top: -45px;
-  left: -45px;
+  left: -43px;
   pointer-events: none;
   display: grid;
   grid-template-columns: repeat(calc(var(--size) + 4), 1fr);
-  width: 690px;
+  width: 687px;
   height: 690px;
 }
 
@@ -74,3 +103,34 @@ body {
   background-color: rgba(255, 68, 0, 0.5);
 }
 
+.utilities {
+  position: relative;
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.utilities > button {
+  font-size: 24px;
+  width: 150px;
+  padding: 8px;
+}
+
+.orientation-switch {
+  text-align: center;
+  font-size: 24px;
+  padding: 8px;
+  border: 1px solid black;
+}
+
+.orientation-switch::before {
+  content: "Press R to rotate\A";
+  font-size: 20px;
+}
+
+.orientation-switch:hover {
+  transform: scale(1.01);
+  background-color: rgb(238, 237, 237);
+}
