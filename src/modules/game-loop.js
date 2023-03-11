@@ -44,6 +44,7 @@ function gamePhaseHandler() {
 function newGame() {
   you = new Player(new Gameboard);
   enemy = new AI(new Gameboard);
+  enemy.reset();
   gamePhases[0].start();
 }
 
@@ -53,13 +54,19 @@ function placementPhase() {
   enemyShips = [
     new Ship(5),
     new Ship(4),
+    new Ship(3),
+    new Ship(5),
+    new Ship(4),
     new Ship(3)
   ];
   enemy.gameboard.placeAllRandomly(enemyShips);
-  DOM.refreshBoard(enemy.gameboard, "enemy's");
+  DOM.refreshBoard(enemy.gameboard, "enemy's", false);
 
   // Your placement
   yourShips = [
+    new Ship(5),
+    new Ship(4),
+    new Ship(3),
     new Ship(5),
     new Ship(4),
     new Ship(3)
@@ -115,8 +122,8 @@ function battlePhase() {
   enemyBoard.forEach(square => square.addEventListener("click", (event) => {
     const y = Number (event.target.getAttribute("data-y"));
     const x = Number (event.target.getAttribute("data-x"));
-    if (you.takeTurn(y, x, enemy.gameboard) === "has already been shot") return;
-    DOM.refreshBoard(enemy.gameboard, "enemy's");
+    if (you.takeTurn(y, x, enemy.gameboard) === "shot cancelled") return;
+    DOM.refreshBoard(enemy.gameboard, "enemy's", false);
     if (!enemy.gameboard.shipsLeft()) {
       winner = "you";
       moveToNextPhase = true;
@@ -136,6 +143,7 @@ function battlePhaseCleanup() {
 
 // Phase 2
 function gameEnd() {
+  DOM.refreshBoard(enemy.gameboard, "enemy's");
   if (winner === "you") alert("You won");
   else if (winner === "enemy") alert("You lost");
 }

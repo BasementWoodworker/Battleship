@@ -47,25 +47,17 @@ function displayBoard(board, whose) {
   })
 }
 
-function refreshBoard(board, whose) {
+function refreshBoard(board, whose, showShips = true) {
   const boardNodeList = (whose === "yours") ? playerBoard.children : enemyBoard.children;
   const hideShips = (whose === "yours") ? false : true;
   let i = 0;
   board.array.forEach(line => {
     line.forEach(square => {
-      if (whose === "yours") {
-        if (square.occupation !== "empty" || (whose !== "yours") && square.checked) {
-          boardNodeList[i].classList.remove("water");
-          boardNodeList[i].classList.add("ship");
-        }
-        if (square.checked) boardNodeList[i].classList.add("checked");
-      } else {
-        if (square.occupation !== "empty" && square.checked) {
-          boardNodeList[i].classList.remove("water");
-          boardNodeList[i].classList.add("ship");
-        }
-        if (square.checked) boardNodeList[i].classList.add("checked");
+      if (square.occupation !== "empty" && (showShips || square.checked)) {
+        boardNodeList[i].classList.remove("water");
+        boardNodeList[i].classList.add("ship");
       }
+      if (square.checked) boardNodeList[i].classList.add("checked");
       i++;
     })
   })

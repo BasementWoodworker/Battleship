@@ -44,10 +44,14 @@ class Gameboard {
     this.ships.push(ship);
   }
   receiveAttack(y, x) {
+    if (x < 0 || x > this.#SIZE - 1 || y < 0 || y > this.#SIZE - 1) return "shot cancelled";
     const square = this.array[y][x];
-    if (square.checked) return "has already been shot"
-    if (square.occupation !== "empty") square.occupation.hit();
+    if (square.checked) return "shot cancelled"
     square.checked = true;
+    if (square.occupation !== "empty") {
+      square.occupation.hit();
+      return "hit";
+    } else return "shot missed";
   }
   shipsLeft() {
     for (const ship of this.ships) {
