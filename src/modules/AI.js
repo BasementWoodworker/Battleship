@@ -1,6 +1,7 @@
 class AI {
   constructor(gameboard) {
     this.gameboard = gameboard;
+    this.difficulty = "normal";
     this.foundShip = null;
     this.foundShipAdjacentCoords = [];
     this.foundShipOrientation = null;
@@ -31,19 +32,25 @@ class AI {
   }
   randomTurn(enemyBoard) {
     console.log("STATE 0: random shot");
+    let result;
+    let y;
+    let x;
     while (true) {
-      const {y, x} = this.#legalMoves.shift();
-      const result = enemyBoard.receiveAttack(y, x);
-      if (result === "hit") {
-        this.state = 1;
-        this.foundShip = {y, x};
-        this.foundShipAdjacentCoords.push({y: y + 1,x: x});
-        this.foundShipAdjacentCoords.push({y: y - 1,x: x});
-        this.foundShipAdjacentCoords.push({y: y,x: x + 1});
-        this.foundShipAdjacentCoords.push({y: y,x: x - 1});
-        shuffleArray(this.foundShipAdjacentCoords);
-      }
+      const move = this.#legalMoves.shift();
+      y = move.y;
+      x = move.x;
+      result = enemyBoard.receiveAttack(y, x);
       if (result !== "shot cancelled") break;
+    }
+    if (this.difficulty === "easy") return;
+    if (result === "hit") {
+      this.state = 1;
+      this.foundShip = {y, x};
+      this.foundShipAdjacentCoords.push({y: y + 1,x: x});
+      this.foundShipAdjacentCoords.push({y: y - 1,x: x});
+      this.foundShipAdjacentCoords.push({y: y,x: x + 1});
+      this.foundShipAdjacentCoords.push({y: y,x: x - 1});
+      shuffleArray(this.foundShipAdjacentCoords);
     }
   }
   findShipOrientation(enemyBoard) {

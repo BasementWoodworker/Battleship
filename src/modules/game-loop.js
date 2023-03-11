@@ -118,6 +118,7 @@ function placementPhaseCleanup() {
 // Phase 1
 function battlePhase() {
   console.log("battle")
+  DOM.difficulty.disabled = true;
   enemyBoard = [...DOM.enemyBoard.children]
   enemyBoard.forEach(square => square.addEventListener("click", (event) => {
     const y = Number (event.target.getAttribute("data-y"));
@@ -143,6 +144,7 @@ function battlePhaseCleanup() {
 
 // Phase 2
 function gameEnd() {
+  DOM.difficulty.disabled = false;
   DOM.refreshBoard(enemy.gameboard, "enemy's");
   if (winner === "you") alert("You won");
   else if (winner === "enemy") alert("You lost");
@@ -152,7 +154,7 @@ function removeEventListeners(board) {
   board.forEach(square => square.replaceWith(square.cloneNode()));
 }
 
-
+// Rotation
 DOM.orientationSwitch.textContent = orientation;
 DOM.orientationSwitch.addEventListener("click", () => {
   orientation = (orientation === "horizontal") ? "vertical" : "horizontal";
@@ -160,6 +162,12 @@ DOM.orientationSwitch.addEventListener("click", () => {
   if (currentPreviewSquare !== undefined) showPlacementPreview(currentPreviewSquare);
 })
 
+window.addEventListener("keydown", (event) => {
+  if (event.key === "r") DOM.orientationSwitch.click()
+  if (currentPreviewSquare !== undefined) showPlacementPreview(currentPreviewSquare);
+})
+
+// Auto-placement
 DOM.randomPlacement.addEventListener("click", function handler() {
   you.gameboard.placeAllRandomly(yourShips);
   DOM.refreshBoard(you.gameboard, "yours");
@@ -167,10 +175,10 @@ DOM.randomPlacement.addEventListener("click", function handler() {
   DOM.randomPlacement.removeEventListener("click", handler);
 })
 
-window.addEventListener("keydown", (event) => {
-  if (event.key === "r") DOM.orientationSwitch.click()
-  if (currentPreviewSquare !== undefined) showPlacementPreview(currentPreviewSquare);
-})
+// Difficulty
+DOM.difficulty.addEventListener("change", (event) => enemy.difficulty = event.target.value);
+
+
 
 export default {
   newGame

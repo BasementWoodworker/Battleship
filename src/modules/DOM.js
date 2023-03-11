@@ -8,9 +8,23 @@ const yourBoardContainer = createElem("div", {Class: "your-board-container"});
 const playerBoard = createElem("div", {Class: "gameboard"});
 const enemyBoard = createElem("div", {Class: "gameboard"});
 const orientationSwitch = createElem("div", {Class: "orientation-switch"});
-const randomPlacement = createElem("div", {Class: "random-button", Content: "Place randomly"});
+const randomPlacement = createElem("div", {Class: "random-button", Content: "Auto-placement"});
 const previewBoard = [];
 const previewBoardElem = createElem("div", {Class: "preview-board"});
+const difficultyContainer = createElem("div", {Class: "difficulty-container"});
+const difficulty = createElem("select", {Class: "difficulty"});
+difficulty.innerHTML = `
+<option value = "normal">normal</option>
+<option value = "easy">easy</option>
+`;
+difficultyContainer.append(
+  createElem("div", {Content: "Difficulty"}),
+  difficulty
+)
+
+difficultyContainer.append(
+  createElem("div", {Class: "selection-frame"}),
+)
 
 yourBoardContainer.append(playerBoard, previewBoardElem);
 
@@ -19,6 +33,7 @@ function buildPage() {
     yourBoardContainer,
     orientationSwitch,
     randomPlacement,
+    difficultyContainer,
     enemyBoard
   )
   for (let i = 0; i < PREVIEW_SIZE; i++) {
@@ -86,6 +101,7 @@ export default {
   randomPlacement,
   playerBoard,
   enemyBoard,
+  difficulty,
   buildPage,
   displayBoard,
   refreshBoard,
