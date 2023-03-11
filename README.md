@@ -1,7 +1,7 @@
 # Battleship  
 [Live Preview](https://basementwoodworker.github.io/Battleship)  
 Battleship game project. Part of TDD practice.  
-Difficulties explanation:  
+Difficulty explanation:  
 easy - random shots  
 normal - simple algorithm  
 1. Shoot randomly until the ship is found  
