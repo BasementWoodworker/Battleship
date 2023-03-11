@@ -5,6 +5,8 @@ const PREVIEW_SIZE = SIZE + 4;
 
 const body = document.body;
 const announcer = createElem("div", {Class: "announcer"});
+const shipPreviewBelt = createElem("div", {Class: "ship-preview-belt"});
+const shipPreviewFrame = createElem("div", {Class: "ship-preview-frame"});
 const yourBoardContainer = createElem("div", {Class: "your-board-container"});
 const playerBoard = createElem("div", {Class: "gameboard"});
 playerBoard.classList.add("player");
@@ -28,11 +30,13 @@ difficultyContainer.append(
 )
 utilities.append(
   announcer,
+  shipPreviewFrame,
   difficultyContainer,
   orientationSwitch,
   randomPlacement,
   newGame
 )
+shipPreviewFrame.appendChild(shipPreviewBelt);
 
 yourBoardContainer.append(playerBoard, previewBoardElem);
 
@@ -120,6 +124,32 @@ function updateAnnouncer(message, color = "black") {
   announcer.style.color = color;
 }
 
+function displayShipPreview(ships) {
+  shipPreviewBelt.replaceChildren();
+  shipPreviewBelt.style.left = "-373px";
+  for (let i = ships.length - 1; i >= 0; i--) {
+    shipPreviewBelt.appendChild(makePreviewShip(ships[i]));
+  }
+}
+
+function toggleHideShipPreview() {
+  shipPreviewFrame.classList.toggle("hidden");
+}
+
+function makePreviewShip(ship) {
+  const shipElem = createElem("div", {Class: "preview-ship"});
+  for (let i = 0; i < ship.length; i++) {
+    shipElem.appendChild(createElem("div", {Class: "part"}));
+  }
+  return shipElem;
+}
+
+function movePreviewBelt() {
+  const leftStr = window.getComputedStyle(shipPreviewBelt).getPropertyValue("left");
+  const left = Number (leftStr.split("").filter(char => (char !== "p" && char !== "x")).join(""));
+  shipPreviewBelt.style.left = left + 55 + "px";
+}
+
 export default {
   playerBoard,
   enemyBoard,
@@ -136,5 +166,8 @@ export default {
   deactivateAllPreviewSquares,
   resetAllPreviewSquares,
   markPreviewSquareProblematic,
-  updateAnnouncer
+  updateAnnouncer,
+  displayShipPreview,
+  toggleHideShipPreview,
+  movePreviewBelt
 }

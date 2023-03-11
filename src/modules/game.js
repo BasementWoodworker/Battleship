@@ -22,7 +22,7 @@ let moveToNextPhase = false;
 let orientation = "horizontal";
 let you;
 let yourBoard;
-let yourShips = []; // !Might be redundant!
+let yourShips = [];
 let enemy;
 let enemyBoard;
 let enemyShips = [];
@@ -87,6 +87,7 @@ function placementPhase() {
     new Ship(2),
     new Ship(2)
   ];
+  DOM.displayShipPreview(yourShips);
   // Placed them two there because javascript was executing faster than DOM elements managed to load
   yourBoard = [...DOM.playerBoard.children];
   enemyBoard = [...DOM.enemyBoard.children];
@@ -114,6 +115,7 @@ function placeYourShip(event) {
   } else {
     placementSound.currentTime = 0;
     placementSound.play();
+    DOM.movePreviewBelt();
     DOM.refreshBoard(you.gameboard, "yours");
     previousPreviewCoords.forEach(position => {
       DOM.deactivatePreviewSquare(position);
@@ -141,6 +143,7 @@ function placementPhaseCleanup() {
 // Phase 1
 function battlePhase() {
   DOM.updateAnnouncer("Battle Phase");
+  DOM.toggleHideShipPreview();
   DOM.newGame.disabled = false;
   DOM.difficulty.disabled = true;
   DOM.randomPlacement.disabled = true;
@@ -186,8 +189,10 @@ function gameEnd() {
 
 function finalCleanup() {
   currentPhase = 0;
+  currentPreviewSquare = undefined;
   removeEventListeners(yourBoard);
   removeEventListeners(enemyBoard);
+  DOM.toggleHideShipPreview();
   DOM.clearBoards();
   DOM.resetAllPreviewSquares();
   newGame();

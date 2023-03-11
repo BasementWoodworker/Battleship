@@ -23,13 +23,41 @@ body {
 
 .announcer {
   position: absolute;
-  top: -220px;
+  top: -140px;
   font-size: 50px;
   text-align: center;
   padding: 8px;
   border: 2px solid black;
   border-radius: 4px;
   width: 400px;
+}
+
+.ship-preview-frame {
+  padding: 8px;
+  border: 2px solid black;
+  border-radius: 2px;
+  width: 70px;
+  overflow: hidden;
+}
+
+.ship-preview-frame.hidden {
+  visibility: hidden;
+}
+
+.ship-preview-belt {
+  position: relative;
+  left: -373px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  transition: 0.25s;
+}
+
+.preview-ship > .part {
+  height: 25px;
+  width: 25px;
+  background-color: lightgrey;
+  border: 1px solid darkcyan;
 }
 
 .your-board-container {
@@ -109,7 +137,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
 }
 
 .utilities > button {
